@@ -1,0 +1,309 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>تحليل قناة ابتكارات</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@600;800&family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
+<style>
+/* Layout: a single reading column (report), RTL, with data strips set wider for charts */
+:root{
+  --bg:#FBF8F4; --surface:#FFFFFF; --ink:#0E2238; --muted:#5E6B7A; --line:#E6DFD6;
+  --accent:#E8501A; --accent-soft:#FDE7DC; --navy:#01203F; --good:#1F8A4C; --warn:#B7791F; --bad:#C0392B;
+  --bar-track:#EFE9E2;
+  --f-display:"Noto Kufi Arabic","IBM Plex Sans Arabic",Tahoma,sans-serif;
+  --f-body:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0D1622; --surface:#152233; --ink:#E9EEF4; --muted:#9AA8B8; --line:#26364A;
+  --accent:#FF7A45; --accent-soft:#3A2116; --navy:#9CC2F0; --good:#4CC284; --warn:#E3AA4F; --bad:#F07A6C;
+  --bar-track:#1E2D40; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D1622; --surface:#152233; --ink:#E9EEF4; --muted:#9AA8B8; --line:#26364A;
+  --accent:#FF7A45; --accent-soft:#3A2116; --navy:#9CC2F0; --good:#4CC284; --warn:#E3AA4F; --bad:#F07A6C;
+  --bar-track:#1E2D40; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.8;direction:rtl;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 64px}
+.wrap{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.5}
+h1{font-size:clamp(30px,5vw,44px);font-weight:800}
+h2{font-size:clamp(22px,3.4vw,28px);font-weight:800;display:flex;align-items:baseline;gap:12px}
+h2 .k{font-size:15px;color:var(--accent);font-weight:600;font-family:var(--f-body)}
+h3{font-size:19px;font-weight:600}
+p{margin:0;max-width:68ch}
+section{display:flex;flex-direction:column;gap:18px}
+.eyebrow{font-size:14px;color:var(--muted);letter-spacing:.02em}
+.lead{font-size:19px;color:var(--ink)}
+.muted{color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+a{color:var(--accent)}
+
+header{display:flex;flex-direction:column;gap:14px;border-bottom:3px solid var(--ink);padding-bottom:28px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:14px;color:var(--muted)}
+.meta b{color:var(--ink);font-weight:700}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.kpi{background:var(--surface);padding:18px 18px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi .v{font-family:var(--f-display);font-size:28px;font-weight:800;font-variant-numeric:tabular-nums}
+.kpi .l{font-size:14px;color:var(--muted);line-height:1.5}
+
+.verdict{background:var(--navy);color:var(--bg);border-radius:16px;padding:26px 28px;display:flex;flex-direction:column;gap:12px}
+:root[data-theme="dark"] .verdict{color:#0D1622}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .verdict{color:#0D1622}}
+.verdict ol{margin:0;padding-inline-start:22px;display:flex;flex-direction:column;gap:8px}
+.verdict h2{color:inherit}
+
+.bars{display:flex;flex-direction:column;gap:10px}
+.bar{display:grid;grid-template-columns:minmax(0,1fr) 72px;gap:12px;align-items:center}
+.bar .lab{font-size:15px;line-height:1.5;min-width:0}
+.bar .track{grid-column:1/-1;height:12px;background:var(--bar-track);border-radius:6px;overflow:hidden;margin-top:-4px}
+.bar .fill{height:100%;background:var(--accent);border-radius:6px}
+.bar .val{text-align:left;font-variant-numeric:tabular-nums;font-weight:700;font-size:15px;direction:ltr}
+.bar.alt .fill{background:var(--navy)}
+.bar.dim .fill{background:var(--muted);opacity:.55}
+
+.eras{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:end;height:220px;padding:0 4px;border-bottom:2px solid var(--line)}
+.era{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;height:100%;min-width:0}
+.era .col{width:min(70px,80%);background:var(--accent);border-radius:8px 8px 0 0}
+.era .v{font-weight:700;font-variant-numeric:tabular-nums;font-size:15px}
+.era-l{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;font-size:13px;color:var(--muted);text-align:center;line-height:1.5}
+.peak .col{background:var(--good)}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:20px}
+
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{padding:10px 14px;text-align:right;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:700;color:var(--muted);font-size:13px;background:var(--bg)}
+tr:last-child td{border-bottom:0}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap;direction:ltr;text-align:left}
+.wrong{color:var(--bad);text-decoration:line-through;text-decoration-thickness:1.5px}
+.right{color:var(--good);font-weight:700}
+
+.issue{display:grid;grid-template-columns:6px minmax(0,1fr);gap:16px}
+.issue .sev{border-radius:3px;background:var(--bad)}
+.issue.mid .sev{background:var(--warn)}
+.issue>div{display:flex;flex-direction:column;gap:8px;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:14px;padding:2px 12px;border-radius:999px;background:var(--accent-soft);color:var(--ink);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+
+.mix{display:flex;height:46px;border-radius:10px;overflow:hidden;font-size:14px;font-weight:700;color:#fff}
+.mix div{display:flex;align-items:center;justify-content:center;white-space:nowrap;padding:0 8px;min-width:0;overflow:hidden}
+.mix .a{background:var(--accent);flex:70}.mix .b{background:#1E7FD8;flex:20}.mix .c{background:#6B7A8C;flex:10}
+.legend{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:14px;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-inline-end:6px;vertical-align:-1px}
+
+.recs{display:flex;flex-direction:column;gap:0;counter-reset:r;border-top:1px solid var(--line)}
+.rec{display:grid;grid-template-columns:48px minmax(0,1fr);gap:14px;padding:18px 0;border-bottom:1px solid var(--line)}
+.rec::before{counter-increment:r;content:counter(r);font-family:var(--f-display);font-weight:800;font-size:26px;color:var(--accent);line-height:1.3}
+.rec>div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ideas{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:10px}
+.idea{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-weight:500}
+
+.plan{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:12px}
+.wk{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.wk b{font-family:var(--f-display);color:var(--accent);font-size:15px}
+.wk span{font-size:15px;line-height:1.6}
+.check{display:flex;flex-direction:column;gap:8px}
+.check label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.check input{margin-top:7px;accent-color:var(--accent);width:18px;height:18px;flex:none}
+.check input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.check input:checked+span{color:var(--muted);text-decoration:line-through}
+
+.note{font-size:14px;color:var(--muted);border-inline-start:3px solid var(--line);padding-inline-start:14px}
+footer{font-size:14px;color:var(--muted);border-top:1px solid var(--line);padding-top:20px;display:flex;flex-direction:column;gap:8px}
+@media (max-width:520px){.eras{height:170px}.era .v{font-size:13px}.rec{grid-template-columns:34px minmax(0,1fr)}}
+@media (prefers-reduced-motion:no-preference){.fill,.col{transition:width .6s ease,height .6s ease}}
+</style>
+
+<div class="wrap">
+
+<header>
+  <span class="eyebrow">تقرير أداء ومراجعة نهج · يوتيوب</span>
+  <h1>تحليل قناة ابتكارات IBTIKARATE</h1>
+  <p class="lead">ما الذي يجلب المشاهدات فعلًا في القناة، وأين تتسرّب، وماذا تغيّر في الأسابيع القادمة لترتفع المشاهدات والمشتركون.</p>
+  <div class="meta">
+    <span>القناة: <b>@ibtikarate</b></span>
+    <span>تاريخ جمع البيانات: <b class="num">13 نوفمبر 2026</b></span>
+    <span>العيّنة: <b class="num">351</b> فيديو عامًّا</span>
+  </div>
+</header>
+
+<section aria-label="أرقام أساسية">
+  <div class="kpis">
+    <div class="kpi"><span class="v num">7,440</span><span class="l">مشترك</span></div>
+    <div class="kpi"><span class="v num">303</span><span class="l">فيديو قصير (شورتس)</span></div>
+    <div class="kpi"><span class="v num">48</span><span class="l">فيديو طويل</span></div>
+    <div class="kpi"><span class="v num">≈1.43M</span><span class="l">مشاهدات الشورتس</span></div>
+    <div class="kpi"><span class="v num">≈68K</span><span class="l">مشاهدات الفيديوهات الطويلة</span></div>
+    <div class="kpi"><span class="v num">1,500</span><span class="l">مشاهدات الشورت المعتاد (الوسيط)</span></div>
+  </div>
+</section>
+
+<section class="verdict">
+  <h2>الخلاصة في ثلاث نقاط</h2>
+  <ol>
+    <li><b>عندك صيغة رابحة مثبتة:</b> شورتس «الأخطاء الشائعة والفروق اللغوية» بأرقام في العنوان، وهي التي صنعت معظم مشاهدات القناة.</li>
+    <li><b>القناة ابتعدت عنها:</b> المحتوى الأحدث يميل إلى الحِكم والعلاقات والتنمية الذاتية، والشورت المعتاد هبط من نحو 4,200 مشاهدة إلى 1,500.</li>
+    <li><b>الحل:</b> هوية واحدة واضحة («العربية الصحيحة في دقيقة»)، وعناوين نظيفة بلا تكديس هاشتاجات وبلا أخطاء إملائية، وقالب صور مصغّرة موحّد.</li>
+  </ol>
+</section>
+
+<section>
+  <h2><span class="k">01</span>القناة تعيش على الضربات الناجحة</h2>
+  <p>أفضل <b class="num">30</b> شورت، أي أعلى 10% من الشورتس، جلبت <b class="num">64%</b> من كل مشاهدات الشورتس. و<b class="num">26</b> شورتًا فقط تجاوزت 10 آلاف مشاهدة. معنى ذلك أن معرفة سبب نجاح هذه الفيديوهات وتكرارها أهم من زيادة عدد الفيديوهات.</p>
+  <div class="panel">
+    <h3>أعلى 12 شورتًا مشاهدةً</h3>
+    <div class="bars" id="topBars"></div>
+    <p class="note">الأرقام كما يعرضها يوتيوب مقرّبة (مثل 89K). المشترك بينها: خطأ أو فرق يمسّ الكلام اليومي، ورقم في العنوان، ومخاطبة مباشرة للمشاهد.</p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="k">02</span>الأداء تراجع في الفيديوهات الأحدث</h2>
+  <p>قسّمتُ الشورتس إلى أربع حقب متساوية حسب ترتيبها في القناة، من الأقدم إلى الأحدث، وحسبتُ المشاهدات المعتادة (الوسيط) في كل حقبة. الحقبة الثالثة هي التي نُشرت فيها أغلب الضربات الكبيرة.</p>
+  <div class="two">
+    <div class="panel">
+      <h3>الشورتس: الوسيط في كل حقبة</h3>
+      <div class="eras" id="erasS"></div>
+      <div class="era-l"><span>الأقدم</span><span>الحقبة الذهبية</span><span>أحدث</span><span>الأحدث</span></div>
+    </div>
+    <div class="panel">
+      <h3>الفيديوهات الطويلة: الوسيط في كل حقبة</h3>
+      <div class="eras" id="erasL"></div>
+      <div class="era-l"><span>الأقدم</span><span></span><span>أحدث</span><span>الأحدث</span></div>
+    </div>
+  </div>
+  <p class="note">حقبة الشورتس الأقدم ضعيفة أيضًا (524)، لكنها نُشرت حين كانت القناة صغيرة، فلا يصحّ أن نحمّل موضوعاتها وحدها سبب ضعفها. التواريخ الدقيقة للفيديوهات القديمة لم تكن متاحة، لذلك اعتمدتُ ترتيب النشر في القناة.</p>
+</section>
+
+<section>
+  <h2><span class="k">03</span>أي الموضوعات تنجح؟</h2>
+  <div class="panel">
+    <h3>المشاهدات المعتادة للشورت حسب الموضوع</h3>
+    <div class="bars" id="catBars"></div>
+    <p class="note">التصنيف آلي بالكلمات المفتاحية في العنوان، فهو تقريبي. بقي 157 شورتًا خارج هذه الفئات (وسيطها 1,300). وتشذّ «وصية أم» في فئة الأسرة (38 ألفًا) فترفع متوسطها دون أن تغيّر الوسيط.</p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="k">04</span>المشكلات التي تُضعف القناة</h2>
+
+  <div class="issue"><span class="sev"></span><div>
+    <h3>هوية مشتّتة بين أربعة جماهير</h3>
+    <p>متعلمو العربية، والمعلمون (أدوات الذكاء الاصطناعي، Kahoot، Google Forms)، وأولياء الأمور (نفسية الطفل، التعليم المنزلي)، وجمهور الحِكم والتنمية الذاتية. الخوارزمية لا تعرف لمن تقترح القناة، ومن جاء لفيديو عن الهمزات لا يجد سببًا ليشترك حين يرى فيديو عن الحب.</p>
+  </div></div>
+
+  <div class="issue"><span class="sev"></span><div>
+    <h3>هاشتاجات مكدّسة ولا تتعلق بالموضوع</h3>
+    <p>في عنوان الشورت المعتاد <b class="num">6</b> هاشتاجات، وتصل في بعضها إلى <b class="num">10</b>. و«#النحو» موضوع على فيديوهات لا علاقة لها بالنحو، مثل «علامات اقتراب الأجل» و«ما هي الدنيا» و«فن التغافل». الهاشتاجات تأكل مساحة العنوان الظاهرة، ويوتيوب يعدّ الوسوم المضلِّلة أو غير المتعلقة بالفيديو مخالفة لسياساته.</p>
+    <div class="chips">
+      <span class="chip">#اكسبلور × 96</span><span class="chip">#اللغة_العربية × 92</span><span class="chip">#النحو × 43</span><span class="chip">#ترند × 39</span><span class="chip">#تيك_توك × 14</span><span class="chip">#لايك × 9</span>
+    </div>
+  </div></div>
+
+  <div class="issue"><span class="sev"></span><div>
+    <h3>أخطاء إملائية في العناوين والصور، وهي تضرّ قناة لغوية تحديدًا</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>كما ظهر في القناة</th><th>الصواب</th><th>نوع الخطأ</th></tr></thead>
+      <tbody>
+        <tr><td class="wrong">لغتك الجملية</td><td class="right">لغتك الجميلة</td><td>تبديل حروف</td></tr>
+        <tr><td class="wrong">احذرالسكوت · هوالقوة · الصحيحةليست · نكتةلغوية</td><td class="right">احذر السكوت · هو القوة · الصحيحة ليست · نكتة لغوية</td><td>مسافة مفقودة</td></tr>
+        <tr><td class="wrong">الذكاء الإصطناعي</td><td class="right">الذكاء الاصطناعي</td><td>همزة وصل (في عدة عناوين وصورة مصغّرة)</td></tr>
+        <tr><td class="wrong">الإمتحانات</td><td class="right">الامتحانات</td><td>همزة وصل (في صورة مصغّرة)</td></tr>
+        <tr><td class="wrong">في اقل من دقيقة</td><td class="right">في أقل من دقيقة</td><td>همزة قطع</td></tr>
+        <tr><td class="wrong">الأنترنيت</td><td class="right">الإنترنت</td><td>رسم الكلمة</td></tr>
+        <tr><td class="wrong">#سلام_نفسب · ليست عربيةlح 2 · الحلقة l 2</td><td class="right">#سلام_نفسي · ليست عربية ح 2 · الحلقة 2</td><td>حروف زائدة</td></tr>
+      </tbody>
+    </table></div>
+  </div></div>
+
+  <div class="issue mid"><span class="sev"></span><div>
+    <h3>الفيديوهات الطويلة الأحدث شبه متوقفة</h3>
+    <p>حلقات سلسلة «100 كلمة» تجلب بين <b class="num">120</b> و<b class="num">220</b> مشاهدة، بينما جلبت الفيديوهات الطويلة الأقدم آلاف المشاهدات:</p>
+    <div class="bars" id="longBars"></div>
+  </div></div>
+
+  <div class="issue mid"><span class="sev"></span><div>
+    <h3>صور مصغّرة بلا قالب، وقوائم تشغيل غير منظّمة</h3>
+    <p>بعض الصور نصّها صغير ومزدحم، وبعضها صورة عامة بلا كتابة، مثل صورة «إفشاء السلام» التي جلب فيديوها 27 مشاهدة. الأنجح منها، مثل «7 أخطاء قاتلة في التعبير» و«فروق لغوية مذهلة»، تشترك في خط عريض وكلمات قليلة وتعبير وجه وألوان قوية. وفي القناة 5 قوائم تشغيل فقط، وأسماؤها محشوّة بالهاشتاجات.</p>
+  </div></div>
+</section>
+
+<section>
+  <h2><span class="k">05</span>التوصيات مرتّبة حسب الأولوية</h2>
+  <div class="panel">
+    <h3>توزيع المحتوى المقترح</h3>
+    <div class="mix" role="img" aria-label="70% أخطاء وفروق وقواعد، 20% فروق القرآن، 10% محتوى المعلمين">
+      <div class="a">70% أخطاء وفروق وقواعد</div><div class="b">20% القرآن</div><div class="c">10%</div>
+    </div>
+    <div class="legend"><span><i style="background:var(--accent)"></i>الأخطاء الشائعة والفروق اللغوية والقواعد السريعة</span><span><i style="background:#1E7FD8"></i>الفروق والبيان في القرآن</span><span><i style="background:#6B7A8C"></i>المعلمون والذكاء الاصطناعي (قائمة مستقلة أو قناة ثانية)</span></div>
+  </div>
+
+  <div class="recs">
+    <div class="rec"><div><h3>ركّز القناة على هوية واحدة: «العربية الصحيحة في دقيقة»</h3><p>أوقف الحِكم والعلاقات والتنمية الذاتية العامة، أو قلّلها كثيرًا. وحدّث وصف القناة واسمها المختصر ليعكسا هذا الوعد.</p></div></div>
+    <div class="rec"><div><h3>كرّر الصيغة الرابحة بتنويعات جديدة</h3><p>رقم، ثم خطأ أو فرق يمسّ الكلام اليومي، ثم مخاطبة مباشرة للمشاهد. عناوين مقترحة:</p>
+      <div class="ideas">
+        <div class="idea">5 أخطاء في الهمزة تفضحك في أول سطر</div>
+        <div class="idea">«أخصائي» أم «اختصاصي»؟ أكثرنا يخطئ</div>
+        <div class="idea">5 كلمات عامية أصلها فصيح</div>
+        <div class="idea">الفرق بين «رأى» و«نظر» و«أبصر»</div>
+        <div class="idea">7 جموع غريبة لا يعرفها أحد</div>
+        <div class="idea">خطأ اليوم #1: «قمتُ بعمل الواجب»</div>
+      </div></div></div>
+    <div class="rec"><div><h3>اجعل أول ثانيتين للخطأ نفسه</h3><p>اكتب الخطأ على الشاشة فورًا مع ❌ ثم الصواب مع ✅. في هاتين الثانيتين يقرّر المشاهد أن يبقى أو يتخطى.</p></div></div>
+    <div class="rec"><div><h3>نظّف العناوين</h3><p>هاشتاجان أو ثلاثة تتعلق فعلًا بموضوع الفيديو، في نهاية العنوان أو في الوصف. احذف #اكسبلور و#ترند و#تيك_توك و#لايك. وراجع إملاء كل عنوان قبل النشر.</p></div></div>
+    <div class="rec"><div><h3>اعتمد قالبًا موحّدًا للصور المصغّرة</h3><p>الألوان نفسها والخط نفسه، و3 إلى 5 كلمات فقط، وشعار القناة في الزاوية نفسها دائمًا.</p></div></div>
+    <div class="rec"><div><h3>أعد بناء الفيديوهات الطويلة من الشورتس الناجحة</h3><p>تجميعات مثل «أشهر 20 خطأ لغويًا في 10 دقائق»، ودروس بصيغة «لغز ثم قاعدة ثم تطبيق». واربط كل شورت بفيديو طويل عبر خاصية «فيديو ذو صلة».</p></div></div>
+    <div class="rec"><div><h3>حوّل المشاهد إلى مشترك</h3><p>سلسلة مرقّمة ثابتة الاسم («خطأ اليوم #1، #2…»)، وتعليق مثبّت فيه سؤال في كل فيديو، وشاشة نهاية تقود إلى قائمة تشغيل المحور نفسه.</p></div></div>
+    <div class="rec"><div><h3>نظّم قوائم التشغيل حسب المحاور</h3><p>الأخطاء الشائعة · الفروق اللغوية · الفروق القرآنية · دروس النحو · أدوات المعلم.</p></div></div>
+    <div class="rec"><div><h3>انتظم في النشر</h3><p>شورت يوميًا وتيرة جيدة إن حافظت على الجودة، ومعه فيديو طويل واحد كل أسبوع. الانتظام أهم من الكثرة.</p></div></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="k">06</span>خطة تجربة لمدة 4 أسابيع</h2>
+  <div class="plan">
+    <div class="wk"><b>الأسبوع 1</b><span>تصحيح العناوين القديمة الأعلى مشاهدة، وتنظيم قوائم التشغيل، وتصميم قالب الصورة المصغّرة.</span></div>
+    <div class="wk"><b>الأسبوعان 2 و3</b><span>نشر 14 شورتًا من المحور الأول فقط بالصيغة الرابحة، وفيديوين طويلين تجميعيين.</span></div>
+    <div class="wk"><b>الأسبوع 4</b><span>6 شورتس إضافية، ثم مقارنة الأرقام بآخر 20 شورتًا قبل التجربة.</span></div>
+  </div>
+  <div class="panel">
+    <h3>ما تتابعه في YouTube Studio</h3>
+    <div class="check">
+      <label><input type="checkbox" id="c1"><span>نسبة من يكمل الشورت مقارنةً بمن يتخطاه («تمت مشاهدته» مقابل «تم التمرير»)</span></label>
+      <label><input type="checkbox" id="c2"><span>متوسط مدة المشاهدة ونسبة المشاهدة من طول الفيديو</span></label>
+      <label><input type="checkbox" id="c3"><span>عدد المشتركين الذين جاؤوا من كل فيديو</span></label>
+      <label><input type="checkbox" id="c4"><span>نسبة النقر على الصورة المصغّرة في الفيديوهات الطويلة</span></label>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <b>المنهجية وحدود التحليل</b>
+  <p>جُمعت العناوين والمشاهدات ومدة الفيديوهات الطويلة من الصفحات العامة للقناة يوم 13 نوفمبر 2026، وتواريخ آخر 15 فيديو وإعجاباتها من خلاصة القناة العامة (RSS). لم تكن تواريخ الفيديوهات الأقدم متاحة، فاعتُمد ترتيب النشر بدلًا منها. لم تُشاهد الفيديوهات نفسها، وبيانات YouTube Studio (نسبة النقر، ومدة المشاهدة، ومصادر الزيارات) لا يراها إلا صاحب القناة؛ تصديرها يسمح بتحليل أدق.</p>
+</footer>
+
+</div>
+
+<script>
+const fmt=n=>n>=1000?(n%1000===0?(n/1000)+'K':(n/1000).toFixed(1).replace('.0','')+'K'):String(n);
+function bars(id,rows,cls){const el=document.getElementById(id);const max=Math.max(...rows.map(r=>r[1]));
+  el.innerHTML=rows.map(([l,v,c])=>`<div class="bar ${c||cls||''}"><span class="lab">${l}</span><span class="val">${typeof v==='number'?v.toLocaleString('en-US'):v}</span><div class="track"><div class="fill" style="width:${(v/max*100).toFixed(1)}%"></div></div></div>`).join('');}
+bars('topBars',[
+ ['5 همزات يخطئ فيها الناس دائمًا',89000],['كلمة واحدة.. معانٍ كثيرة!',84000],['5 قواعد نحوية لازم تحفظها',83000],
+ ['أخطاء لغوية نرتكبها كل يوم! هل تقع فيها أنت؟',70000],['5 كلمات نستعملها خطأ يوميًا',66000],['الفرق بين «استطاع» و«قدر»',55000],
+ ['أسرار تعدد الأسماء: السيف والأسد',43000],['وصيّة أم.. إرث من المحبة',38000,'dim'],['الفرق بين «جلس» و«قعد»',37000],
+ ['هنا يلتقي البحر المتوسط والمحيط الأطلسي',37000,'dim'],['سر التمييز بين (سَبَّح) و(يُسَبِّح) في القرآن',35000],['5 كلمات لا مفرد لها في العربية',31000]
+]);
+bars('catBars',[['النحو والإملاء والأخطاء الشائعة',2350],['الفروق اللغوية',2050],['الفروق القرآنية',1500],['الحكمة والتنمية الذاتية',1300,'dim'],['الأسرة والعلاقات',1300,'dim']]);
+bars('longBars',[['كيف تنمي الصحة النفسية والعاطفية لطفلك؟',5500,'alt'],['مترادفات؟! لا… بل فروق لغوية مذهلة',4500,'alt'],['صمّم اختبارك الإلكتروني مع AI وGoogle Forms',4300,'alt'],['استراتيجيات تجنب التوتر والقلق',4300,'alt'],['احذر 7 أخطاء في التعبير',3700,'alt'],['100 كلمة · الحلقة 5 (الأسرة)',221,'dim'],['100 كلمة · الحلقة 6 (الطعام والشراب)',133,'dim']]);
+function eras(id,vals,peak){const el=document.getElementById(id);const max=Math.max(...vals);
+  el.innerHTML=vals.map((v,i)=>`<div class="era ${i===peak?'peak':''}"><span class="v">${v.toLocaleString('en-US')}</span><div class="col" style="height:${Math.max(3,v/max*80).toFixed(1)}%"></div></div>`).join('');}
+eras('erasS',[524,4200,1600,1500],1);
+eras('erasL',[1350,1500,784,143],1);
+try{['c1','c2','c3','c4'].forEach(id=>{const b=document.getElementById(id);b.checked=localStorage.getItem('ib-'+id)==='1';b.addEventListener('change',()=>{try{localStorage.setItem('ib-'+id,b.checked?'1':'0')}catch(e){}})})}catch(e){}
+</script>
+
+</body></html>
